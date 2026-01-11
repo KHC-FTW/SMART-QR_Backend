@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: smart_qr_backend
+  datasource:
+    url: jdbc:postgresql://localhost:5432/smartqrdb
+    username: postgres
+    password: pgadmin
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+  jackson:
+    time-zone: Asia/Hong_Kong
+
+server:
+  port: 8080
+  # ADDED: Bind to all interfaces so other devices on the same Wi‑Fi can access the API
+  # via http://<your-lan-ip>:8080/api/...
+  # This does NOT automatically expose the server to the public Internet; that depends on router/NAT/firewall.
+  address: 0.0.0.0
+  servlet:
+    context-path: /api
+
+jwt:
+  secret: bcefb73e77ea81dbd5c5f146a6bd26e295e31cf07abba93a8c10d11b14bc0d7a1703a07862440c977dc13beab40b8262dc98423df3a295a3f987ca346c5d9289
+  expiration-time: 36000000
+  issuer: smart_qr
