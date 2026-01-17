@@ -24,7 +24,7 @@ public class AppUserController {
     }
 
     @PostMapping("/register")
-    public StandardRespDto signUp(@RequestBody CredentialsDto credentialsDto) {
+    public StandardRespDto register(@RequestBody CredentialsDto credentialsDto) {
         return appUserService.register(credentialsDto);
     }
 
@@ -44,7 +44,7 @@ public class AppUserController {
     }
 
     @GetMapping("/get-history")
-    public HistoryRespDto getTransactionHistory() {
+    public HistoryRespDto getHistory() {
         return appUserService.getHistory();
     }
 }
