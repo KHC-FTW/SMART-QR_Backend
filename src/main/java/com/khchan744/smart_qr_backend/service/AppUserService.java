@@ -56,7 +56,7 @@ public class AppUserService {
     private static final String VER_PAYMENT_REPLAY_TOKEN_RESP = "Payment unsuccessful! The payment token has been used already.";
 
 
-    public LoginRespDto verifyLogin(@NonNull CredentialsDto credentials) {
+    public LoginRespDto verifyLogin(@NonNull CredentialsReqDto credentials) {
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(credentials.getUsername(), credentials.getPassword()));
         if (authentication.isAuthenticated()) {
@@ -67,7 +67,7 @@ public class AppUserService {
         return new LoginRespDto(RespStatus.FAILURE, LOGIN_FAIL_RESP, null, null);
     }
 
-    public StandardRespDto register(@NonNull CredentialsDto credentials) {
+    public StandardRespDto register(@NonNull CredentialsReqDto credentials) {
         AppUser existingUser = appUserRepo.findByUsername(credentials.getUsername());
         if (existingUser != null) {
             return new StandardRespDto(RespStatus.FAILURE, REG_FAIL_RESP);
@@ -88,9 +88,9 @@ public class AppUserService {
     }
 
     @Transactional
-    public StandardRespDto verifyPayment(@NonNull VerifyPaymentDto verifyPaymentDto) {
+    public StandardRespDto verifyPayment(@NonNull VerifyPaymentReqDto verifyPaymentReqDto) {
         // check if payer exists
-        String payerUsername = verifyPaymentDto.getPayerUsername();
+        String payerUsername = verifyPaymentReqDto.getPayerUsername();
         String payeeUsername = securityService.getUsername();
         AppUser payer = appUserRepo.findByUsername(payerUsername);
         AppUser payee = appUserRepo.findByUsername(payeeUsername);
@@ -101,23 +101,23 @@ public class AppUserService {
             return new StandardRespDto(RespStatus.FAILURE, VER_PAYMENT_SAME_USER_RESP);
         }
         // check if token has been used already
-        String postedPaymentToken = verifyPaymentDto.getPaymentToken();
+        String postedPaymentToken = verifyPaymentReqDto.getPaymentToken();
         if (payer.hasUsedPaymentToken(postedPaymentToken)) {
             return new StandardRespDto(RespStatus.FAILURE, VER_PAYMENT_REPLAY_TOKEN_RESP);
         }
         // check if payer has enough balance
         float payerBalance = payer.getBalance();
-        float paymentAmount = Float.parseFloat(verifyPaymentDto.getPaymentAmount());
+        float paymentAmount = Float.parseFloat(verifyPaymentReqDto.getPaymentAmount());
         if (payerBalance < paymentAmount) {
             return new StandardRespDto(RespStatus.FAILURE, VER_PAYMENT_INSUFF_BALANCE_RESP);
         }
 
         // start verifying payment token
-        byte[] receivedPaymentTokenBytes = Utils.base64Decode(verifyPaymentDto.getPaymentToken());
+        byte[] receivedPaymentTokenBytes = Utils.base64Decode(verifyPaymentReqDto.getPaymentToken());
         byte[] payerUsernameBytes = payerUsername.getBytes(StandardCharsets.UTF_8);
         byte[] payerSecret = Utils.base64Decode(payer.getSecret());
-        byte[] paymentAmountBytes = Utils.paymentAmountToBytes(verifyPaymentDto.getPaymentAmount());
-        byte[] payeeMetadataFingerprintBytes = Utils.base64Decode(verifyPaymentDto.getPayeeMetadataFingerprint());
+        byte[] paymentAmountBytes = Utils.paymentAmountToBytes(verifyPaymentReqDto.getPaymentAmount());
+        byte[] payeeMetadataFingerprintBytes = Utils.base64Decode(verifyPaymentReqDto.getPayeeMetadataFingerprint());
         byte[] recomputedPaymentToken = Utils.computePaymentToken(
                 payerUsernameBytes, payerSecret,
                 paymentAmountBytes, payeeMetadataFingerprintBytes);
@@ -131,8 +131,8 @@ public class AppUserService {
 
             // update transaction history for payer and payee
             Instant now = Instant.now();
-            payer.addHistory(new History(payer, now, HistoryType.PAY, verifyPaymentDto.getPaymentAmount(), payeeUsername));
-            payee.addHistory(new History(payee, now, HistoryType.RECEIVE, verifyPaymentDto.getPaymentAmount(), payerUsername));
+            payer.addHistory(new History(payer, now, HistoryType.PAY, verifyPaymentReqDto.getPaymentAmount(), payeeUsername));
+            payee.addHistory(new History(payee, now, HistoryType.RECEIVE, verifyPaymentReqDto.getPaymentAmount(), payerUsername));
             // add used token
             payer.addUsedPaymentToken(postedPaymentToken);
 

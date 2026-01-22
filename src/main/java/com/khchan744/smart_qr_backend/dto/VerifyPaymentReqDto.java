@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class VerifyPaymentDto {
+public class VerifyPaymentReqDto {
     private final String paymentToken;
     private final String payerUsername;
     private final String paymentAmount;

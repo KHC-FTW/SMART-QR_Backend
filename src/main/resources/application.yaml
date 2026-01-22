@@ -18,9 +18,6 @@ spring:
 
 server:
   port: 8080
-  # ADDED: Bind to all interfaces so other devices on the same Wi‑Fi can access the API
-  # via http://<your-lan-ip>:8080/api/...
-  # This does NOT automatically expose the server to the public Internet; that depends on router/NAT/firewall.
   address: 0.0.0.0
   servlet:
     context-path: /api

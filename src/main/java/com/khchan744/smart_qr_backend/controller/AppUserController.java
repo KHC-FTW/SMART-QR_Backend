@@ -19,13 +19,13 @@ public class AppUserController {
     }
 
     @PostMapping("/log-in")
-    public LoginRespDto logIn(@RequestBody CredentialsDto credentialsDto) {
-        return appUserService.verifyLogin(credentialsDto);
+    public LoginRespDto logIn(@RequestBody CredentialsReqDto credentialsReqDto) {
+        return appUserService.verifyLogin(credentialsReqDto);
     }
 
     @PostMapping("/register")
-    public StandardRespDto register(@RequestBody CredentialsDto credentialsDto) {
-        return appUserService.register(credentialsDto);
+    public StandardRespDto register(@RequestBody CredentialsReqDto credentialsReqDto) {
+        return appUserService.register(credentialsReqDto);
     }
 
     @GetMapping("/get-balance")
@@ -34,8 +34,8 @@ public class AppUserController {
     }
 
     @PostMapping("/verify-payment")
-    public StandardRespDto verifyPayment(@RequestBody VerifyPaymentDto verifyPaymentDto) {
-        return appUserService.verifyPayment(verifyPaymentDto);
+    public StandardRespDto verifyPayment(@RequestBody VerifyPaymentReqDto verifyPaymentReqDto) {
+        return appUserService.verifyPayment(verifyPaymentReqDto);
     }
 
     @PostMapping("/top-up")
