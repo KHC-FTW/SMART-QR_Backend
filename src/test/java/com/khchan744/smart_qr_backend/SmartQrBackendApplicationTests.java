@@ -18,7 +18,7 @@ class SmartQrBackendApplicationTests {
 		byte[] mutualMFBytes = Utils.sha256Hash("testMF".getBytes(StandardCharsets.UTF_8));
 		String payerUsername = "payerChan";
 		byte[] payerUsernameBytes = payerUsername.getBytes(StandardCharsets.UTF_8);
-		byte[] payerSecret = Utils.base64Decode("TuBcfTWsscuF3y98aGyw5xOzgQT9vFr24P/oNd2MVt8=");
+		byte[] payerSecret = Utils.base64Decode("0h+KAAZJmvR2p5y30Cl8VZOH2ncY5AvbPujc8mU+yAc=");
 		String paymentAmount = "123.4";
 		byte[] paymentAmountBytes = Utils.paymentAmountToBytes(paymentAmount);
 		byte[] paymentTokenBytes = Utils.computePaymentToken(payerUsernameBytes, payerSecret, paymentAmountBytes,  mutualMFBytes);

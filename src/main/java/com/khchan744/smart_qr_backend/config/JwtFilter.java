@@ -31,13 +31,10 @@ public class JwtFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
-
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
-
             try {
                 String username = jwtService.extractUsername(token);
-
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = context.getBean(AppUserDetailsService.class).loadUserByUsername(username);
                     if (jwtService.validateToken(token, userDetails)) {
@@ -51,7 +48,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 // Invalid/expired token -> leave the request unauthenticated.
             }
         }
-
         filterChain.doFilter(request, response);
     }
 }

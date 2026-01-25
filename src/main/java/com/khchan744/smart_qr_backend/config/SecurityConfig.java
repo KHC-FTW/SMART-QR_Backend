@@ -29,13 +29,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         return http
-                // CHANGED: Enable CORS support in Spring Security. Without this, browsers will fail preflight
-                // and you may see 403/blocked requests even when your JWT token is correct.
                 .cors(cors -> {
                 })
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // CHANGED: Always allow CORS preflight requests.
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/log-in", "/register", "/test/**").permitAll()
                         .anyRequest().authenticated())
@@ -43,19 +40,16 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint((request, response, authException) ->
+                        .authenticationEntryPoint((request,
+                                                   response,
+                                                   authException) ->
                                 response.sendError(401, authException.getMessage())))
                 .build();
     }
 
-    // ADDED: Global CORS policy.
-    // Note: If you plan to use cookies/credentials, replace "*" with explicit origins and setAllowCredentials(true).
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-
-        // CHANGED: Allow any origin.
-        // Using allowedOriginPatterns("*") instead of allowedOrigins("*") works better with newer Spring.
         config.setAllowedOriginPatterns(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
