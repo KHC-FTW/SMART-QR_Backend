@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class AppUserService {
@@ -74,7 +73,7 @@ public class AppUserService {
         }
         String encodedPassword = passwordEncoder.encode(credentials.getPassword());
         String secret = Utils.base64Encode(Utils.sha256Hash(encodedPassword.getBytes(StandardCharsets.UTF_8)));
-        float balance = (float) ThreadLocalRandom.current().nextInt(MIN_BALANCE, MAX_BALANCE);
+        float balance = 0f;
         appUserRepo.save(new AppUser(credentials.getUsername(), encodedPassword, secret, balance));
         return new StandardRespDto(RespStatus.SUCCESS, REG_SUCCESS_RESP);
     }
