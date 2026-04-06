@@ -39,9 +39,6 @@ public class AppUserService {
     @Autowired
     SecurityService securityService;
 
-    private static final int MIN_BALANCE = 500;
-    private static final int MAX_BALANCE = 1001;
-
     private static final String LOGIN_SUCCESS_RESP = "Login success!";
     private static final String LOGIN_FAIL_RESP = "Incorrect username or password!";
     private static final String REG_FAIL_RESP = "Username already exists.";
